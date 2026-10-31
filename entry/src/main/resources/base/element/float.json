@@ -3,6 +3,42 @@
     {
       "name": "page_text_font_size",
       "value": "50fp"
+    },
+    {
+      "name": "page_padding",
+      "value": "12vp"
+    },
+    {
+      "name": "display_font_size",
+      "value": "48fp"
+    },
+    {
+      "name": "display_line_height",
+      "value": "64vp"
+    },
+    {
+      "name": "display_bottom_gap",
+      "value": "8vp"
+    },
+    {
+      "name": "expression_font_size",
+      "value": "20fp"
+    },
+    {
+      "name": "expression_line_height",
+      "value": "28vp"
+    },
+    {
+      "name": "key_font_size",
+      "value": "24fp"
+    },
+    {
+      "name": "key_radius",
+      "value": "20vp"
+    },
+    {
+      "name": "key_gap",
+      "value": "5vp"
     }
   ]
 }

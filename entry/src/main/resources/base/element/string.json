@@ -2,15 +2,91 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "module description"
+      "value": "手机计算器"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "description"
+      "value": "手机计算器"
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "计算器"
+    },
+    {
+      "name": "calc_error",
+      "value": "无法计算"
+    },
+    {
+      "name": "key_clear",
+      "value": "清除"
+    },
+    {
+      "name": "key_backspace",
+      "value": "退格"
+    },
+    {
+      "name": "key_divide",
+      "value": "÷"
+    },
+    {
+      "name": "key_multiply",
+      "value": "×"
+    },
+    {
+      "name": "key_subtract",
+      "value": "−"
+    },
+    {
+      "name": "key_add",
+      "value": "+"
+    },
+    {
+      "name": "key_equal",
+      "value": "="
+    },
+    {
+      "name": "key_dot",
+      "value": "."
+    },
+    {
+      "name": "key_0",
+      "value": "0"
+    },
+    {
+      "name": "key_1",
+      "value": "1"
+    },
+    {
+      "name": "key_2",
+      "value": "2"
+    },
+    {
+      "name": "key_3",
+      "value": "3"
+    },
+    {
+      "name": "key_4",
+      "value": "4"
+    },
+    {
+      "name": "key_5",
+      "value": "5"
+    },
+    {
+      "name": "key_6",
+      "value": "6"
+    },
+    {
+      "name": "key_7",
+      "value": "7"
+    },
+    {
+      "name": "key_8",
+      "value": "8"
+    },
+    {
+      "name": "key_9",
+      "value": "9"
     }
   ]
 }

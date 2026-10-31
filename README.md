@@ -1,6 +1,6 @@
 # Calculator
 
-HarmonyOS 手机计算器。当前仓库是 DevEco Studio 的 Stage 模型工程，界面仍是模板页，还没有运算逻辑。
+HarmonyOS 手机计算器。支持加、减、乘、除和小数，乘除优先于加减。
 
 | 项 | 值 |
 | --- | --- |
@@ -15,7 +15,7 @@ HarmonyOS 手机计算器。当前仓库是 DevEco Studio 的 Stage 模型工程
 
 用 DevEco Studio 打开本目录，等待 hvigor 同步依赖后，在手机或模拟器上运行 `entry` 模块。
 
-启动后进入 `pages/Index`。页面居中显示 `Hello World`，点击后变为 `Welcome`。
+启动后进入 `pages/Index`。上方显示表达式和结果，下方是数字与运算按键。除以零时结果区显示「无法计算」。
 
 ## 目录
 

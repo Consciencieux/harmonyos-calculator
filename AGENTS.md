@@ -5,9 +5,10 @@
 ## 现状
 
 - 入口 Ability：`entry/src/main/ets/entryability/EntryAbility.ets`，加载 `pages/Index`。
-- 唯一页面：`entry/src/main/ets/pages/Index.ets`，仍是 Hello World 模板。
+- 唯一页面：`entry/src/main/ets/pages/Index.ets`，手机简易计算器。
+- 运算：`entry/src/main/ets/calculator/Calculator.ets`。支持加、减、乘、除、小数、清除、退格；乘除优先于加减。除以零或结果非法时界面显示「无法计算」。
 - 备份扩展 `EntryBackupAbility` 只打日志，没有业务数据。
-- 测试是 Hypium 模板，断言 `'abc'` 包含 `'b'`，不能当作计算器行为的覆盖。
+- 本地单元测试覆盖计算器运算。仪器测试仍是 Hypium 模板。
 
 计算器的按键、表达式和结果放在 `entry/src/main/ets/`。界面文案、颜色、字号放进 `entry/src/main/resources/`，不要在组件里写死用户可见字符串。
 

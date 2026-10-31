@@ -3,6 +3,54 @@
     {
       "name": "start_window_background",
       "value": "#000000"
+    },
+    {
+      "name": "page_background",
+      "value": "#000000"
+    },
+    {
+      "name": "display_text",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "expression_text",
+      "value": "#8E8E93"
+    },
+    {
+      "name": "calc_error",
+      "value": "#FF453A"
+    },
+    {
+      "name": "key_number_background",
+      "value": "#2C2C2E"
+    },
+    {
+      "name": "key_number_text",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "key_function_background",
+      "value": "#3A3A3C"
+    },
+    {
+      "name": "key_function_text",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "key_operator_background",
+      "value": "#FF9F0A"
+    },
+    {
+      "name": "key_operator_text",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "key_equal_background",
+      "value": "#0A84FF"
+    },
+    {
+      "name": "key_equal_text",
+      "value": "#FFFFFF"
     }
   ]
 }

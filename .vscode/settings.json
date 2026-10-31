@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.ets": "typescript",
+    "*.json5": "jsonc"
+  }
+}

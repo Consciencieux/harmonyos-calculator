@@ -2,6 +2,54 @@
   "color": [
     {
       "name": "start_window_background",
+      "value": "#F2F2F7"
+    },
+    {
+      "name": "page_background",
+      "value": "#F2F2F7"
+    },
+    {
+      "name": "display_text",
+      "value": "#1C1C1E"
+    },
+    {
+      "name": "expression_text",
+      "value": "#8E8E93"
+    },
+    {
+      "name": "calc_error",
+      "value": "#FF3B30"
+    },
+    {
+      "name": "key_number_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "key_number_text",
+      "value": "#1C1C1E"
+    },
+    {
+      "name": "key_function_background",
+      "value": "#D1D1D6"
+    },
+    {
+      "name": "key_function_text",
+      "value": "#1C1C1E"
+    },
+    {
+      "name": "key_operator_background",
+      "value": "#FF9F0A"
+    },
+    {
+      "name": "key_operator_text",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "key_equal_background",
+      "value": "#007AFF"
+    },
+    {
+      "name": "key_equal_text",
       "value": "#FFFFFF"
     }
   ]
