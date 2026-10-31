@@ -10,6 +10,8 @@ struct Index {
 
   build() {
     Column() {
+      Blank()
+        .layoutWeight(1)
       this.resultPanel()
       this.keypad()
     }
@@ -52,8 +54,6 @@ struct Index {
       }
     }
     .width('100%')
-    .layoutWeight(2)
-    .justifyContent(FlexAlign.End)
     .alignItems(HorizontalAlign.End)
     .padding({
       left: $r('app.float.key_gap'),
@@ -65,68 +65,62 @@ struct Index {
   @Builder
   keypad() {
     Column() {
-      Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Stretch }) {
-        this.keyButton($r('app.string.key_clear'), 'clear', 2, 'function')
-        this.keyButton($r('app.string.key_backspace'), 'backspace', 1, 'function')
-        this.keyButton($r('app.string.key_divide'), 'divide', 1, 'operator')
+      Row() {
+        this.keyButton(true, $r('app.string.key_clear'), 'clear', 'function')
+        this.keyButton(false, $r('app.string.key_backspace'), 'backspace', 'function')
+        this.keyButton(false, $r('app.string.key_divide'), 'divide', 'operator')
       }
-      .layoutWeight(1)
       .width('100%')
 
-      Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Stretch }) {
-        this.keyButton($r('app.string.key_7'), '7', 1, 'number')
-        this.keyButton($r('app.string.key_8'), '8', 1, 'number')
-        this.keyButton($r('app.string.key_9'), '9', 1, 'number')
-        this.keyButton($r('app.string.key_multiply'), 'multiply', 1, 'operator')
+      Row() {
+        this.keyButton(false, $r('app.string.key_7'), '7', 'number')
+        this.keyButton(false, $r('app.string.key_8'), '8', 'number')
+        this.keyButton(false, $r('app.string.key_9'), '9', 'number')
+        this.keyButton(false, $r('app.string.key_multiply'), 'multiply', 'operator')
       }
-      .layoutWeight(1)
       .width('100%')
 
-      Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Stretch }) {
-        this.keyButton($r('app.string.key_4'), '4', 1, 'number')
-        this.keyButton($r('app.string.key_5'), '5', 1, 'number')
-        this.keyButton($r('app.string.key_6'), '6', 1, 'number')
-        this.keyButton($r('app.string.key_subtract'), 'subtract', 1, 'operator')
+      Row() {
+        this.keyButton(false, $r('app.string.key_4'), '4', 'number')
+        this.keyButton(false, $r('app.string.key_5'), '5', 'number')
+        this.keyButton(false, $r('app.string.key_6'), '6', 'number')
+        this.keyButton(false, $r('app.string.key_subtract'), 'subtract', 'operator')
       }
-      .layoutWeight(1)
       .width('100%')
 
-      Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Stretch }) {
-        this.keyButton($r('app.string.key_1'), '1', 1, 'number')
-        this.keyButton($r('app.string.key_2'), '2', 1, 'number')
-        this.keyButton($r('app.string.key_3'), '3', 1, 'number')
-        this.keyButton($r('app.string.key_add'), 'add', 1, 'operator')
+      Row() {
+        this.keyButton(false, $r('app.string.key_1'), '1', 'number')
+        this.keyButton(false, $r('app.string.key_2'), '2', 'number')
+        this.keyButton(false, $r('app.string.key_3'), '3', 'number')
+        this.keyButton(false, $r('app.string.key_add'), 'add', 'operator')
       }
-      .layoutWeight(1)
       .width('100%')
 
-      Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Stretch }) {
-        this.keyButton($r('app.string.key_0'), '0', 2, 'number')
-        this.keyButton($r('app.string.key_dot'), 'dot', 1, 'number')
-        this.keyButton($r('app.string.key_equal'), 'equal', 1, 'equal')
+      Row() {
+        this.keyButton(true, $r('app.string.key_0'), '0', 'number')
+        this.keyButton(false, $r('app.string.key_dot'), 'dot', 'number')
+        this.keyButton(false, $r('app.string.key_equal'), 'equal', 'equal')
       }
-      .layoutWeight(1)
       .width('100%')
     }
     .width('100%')
-    .layoutWeight(5)
   }
 
   @Builder
-  keyButton(label: Resource, action: string, weight: number, role: string) {
+  keyButton(wide: boolean, label: Resource, action: string, role: string) {
     if (role === 'operator') {
-      this.keyFace(label, action, weight, $r('app.color.key_operator_background'), $r('app.color.key_operator_text'))
+      this.keyFace(wide, label, action, $r('app.color.key_operator_background'), $r('app.color.key_operator_text'))
     } else if (role === 'equal') {
-      this.keyFace(label, action, weight, $r('app.color.key_equal_background'), $r('app.color.key_equal_text'))
+      this.keyFace(wide, label, action, $r('app.color.key_equal_background'), $r('app.color.key_equal_text'))
     } else if (role === 'function') {
-      this.keyFace(label, action, weight, $r('app.color.key_function_background'), $r('app.color.key_function_text'))
+      this.keyFace(wide, label, action, $r('app.color.key_function_background'), $r('app.color.key_function_text'))
     } else {
-      this.keyFace(label, action, weight, $r('app.color.key_number_background'), $r('app.color.key_number_text'))
+      this.keyFace(wide, label, action, $r('app.color.key_number_background'), $r('app.color.key_number_text'))
     }
   }
 
   @Builder
-  keyFace(label: Resource, action: string, weight: number, background: Resource, foreground: Resource) {
+  keyFace(wide: boolean, label: Resource, action: string, background: Resource, foreground: Resource) {
     Column() {
       Button(label, { type: ButtonType.Normal, stateEffect: true })
         .width('100%')
@@ -136,13 +130,13 @@ struct Index {
         .fontWeight(FontWeight.Medium)
         .fontColor(foreground)
         .backgroundColor(background)
-        .borderRadius($r('app.float.key_radius'))
+        .borderRadius(wide ? $r('app.float.key_radius') : '50%')
         .onClick(() => {
           this.onKey(action)
         })
     }
-    .layoutWeight(weight)
-    .height('100%')
+    .layoutWeight(wide ? 2 : 1)
+    .aspectRatio(wide ? 2 : 1)
     .padding($r('app.float.key_gap'))
   }
 
