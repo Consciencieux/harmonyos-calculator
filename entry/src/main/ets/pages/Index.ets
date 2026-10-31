@@ -1,3 +1,4 @@
+import { uiMaterial } from '@kit.ArkUI'
 import { CALC_ERROR, Calculator } from '../calculator/Calculator'
 
 @Entry
@@ -7,18 +8,41 @@ struct Index {
   @State expressionText: string = ''
   @State hasError: boolean = false
   private calculator: Calculator = new Calculator()
+  private numberMaterial: uiMaterial.ImmersiveMaterial =
+    this.createKeyMaterial($r('app.color.key_number_material'))
+  private functionMaterial: uiMaterial.ImmersiveMaterial =
+    this.createKeyMaterial($r('app.color.key_function_material'))
+  private operatorMaterial: uiMaterial.ImmersiveMaterial =
+    this.createKeyMaterial($r('app.color.key_operator_material'))
+  private equalMaterial: uiMaterial.ImmersiveMaterial =
+    this.createKeyMaterial($r('app.color.key_equal_material'))
 
   build() {
-    Column() {
-      Blank()
-        .layoutWeight(1)
-      this.resultPanel()
-      this.keypad()
+    Tabs() {
+      TabContent() {
+        Column() {
+          Blank()
+            .layoutWeight(1)
+          this.resultPanel()
+        }
+        .width('100%')
+        .height('100%')
+        .padding({
+          left: $r('app.float.page_padding'),
+          right: $r('app.float.page_padding'),
+          top: $r('app.float.page_padding')
+        })
+      }
+      .tabBar(this.keypad())
     }
+    .barPosition(BarPosition.End)
+    .barMode(BarMode.Fixed)
+    .barHeight('auto')
+    .scrollable(false)
+    .barBackgroundColor(Color.Transparent)
     .width('100%')
     .height('100%')
     .backgroundColor($r('app.color.page_background'))
-    .padding($r('app.float.page_padding'))
   }
 
   @Builder
@@ -104,23 +128,33 @@ struct Index {
       .width('100%')
     }
     .width('100%')
+    .padding({
+      left: $r('app.float.page_padding'),
+      right: $r('app.float.page_padding'),
+      bottom: $r('app.float.page_padding')
+    })
   }
 
   @Builder
   keyButton(wide: boolean, label: Resource, action: string, role: string) {
     if (role === 'operator') {
-      this.keyFace(wide, label, action, $r('app.color.key_operator_background'), $r('app.color.key_operator_text'))
+      this.keyFace(wide, label, action, $r('app.color.key_operator_background'), $r('app.color.key_operator_text'),
+        this.operatorMaterial)
     } else if (role === 'equal') {
-      this.keyFace(wide, label, action, $r('app.color.key_equal_background'), $r('app.color.key_equal_text'))
+      this.keyFace(wide, label, action, $r('app.color.key_equal_background'), $r('app.color.key_equal_text'),
+        this.equalMaterial)
     } else if (role === 'function') {
-      this.keyFace(wide, label, action, $r('app.color.key_function_background'), $r('app.color.key_function_text'))
+      this.keyFace(wide, label, action, $r('app.color.key_function_background'), $r('app.color.key_function_text'),
+        this.functionMaterial)
     } else {
-      this.keyFace(wide, label, action, $r('app.color.key_number_background'), $r('app.color.key_number_text'))
+      this.keyFace(wide, label, action, $r('app.color.key_number_background'), $r('app.color.key_number_text'),
+        this.numberMaterial)
     }
   }
 
   @Builder
-  keyFace(wide: boolean, label: Resource, action: string, background: Resource, foreground: Resource) {
+  keyFace(wide: boolean, label: Resource, action: string, background: Resource, foreground: Resource,
+    material: uiMaterial.ImmersiveMaterial) {
     Column() {
       Button(label, { type: ButtonType.Normal, stateEffect: true })
         .width('100%')
@@ -131,6 +165,7 @@ struct Index {
         .fontColor(foreground)
         .backgroundColor(background)
         .borderRadius(wide ? $r('app.float.key_radius') : '50%')
+        .systemMaterial(material)
         .onClick(() => {
           this.onKey(action)
         })
@@ -138,6 +173,19 @@ struct Index {
     .layoutWeight(wide ? 2 : 1)
     .aspectRatio(wide ? 2 : 1)
     .padding($r('app.float.key_gap'))
+  }
+
+  private createKeyMaterial(tint: Resource): uiMaterial.ImmersiveMaterial {
+    const light: uiMaterial.LightEffectOptions = { color: Color.White }
+    const options: uiMaterial.ImmersiveOptions = {
+      style: uiMaterial.ImmersiveStyle.ULTRA_THIN,
+      materialColor: tint,
+      colorInvert: false,
+      applyShadow: true,
+      interactive: true,
+      lightEffect: light
+    }
+    return new uiMaterial.ImmersiveMaterial(options)
   }
 
   private onKey(action: string): void {

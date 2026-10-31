@@ -51,6 +51,22 @@
     {
       "name": "key_equal_text",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "key_number_material",
+      "value": "#662C2C2E"
+    },
+    {
+      "name": "key_function_material",
+      "value": "#803A3A3C"
+    },
+    {
+      "name": "key_operator_material",
+      "value": "#99FF9F0A"
+    },
+    {
+      "name": "key_equal_material",
+      "value": "#990A84FF"
     }
   ]
 }
