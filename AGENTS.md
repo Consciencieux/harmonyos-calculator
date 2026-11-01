@@ -5,7 +5,7 @@
 ## 现状
 
 - 入口 Ability：`entry/src/main/ets/entryability/EntryAbility.ets`，加载 `pages/Index`。
-- 唯一页面：`entry/src/main/ets/pages/Index.ets`，手机简易计算器。
+- 唯一页面：`entry/src/main/ets/pages/Index.ets`，简易计算器。手机竖屏铺满宽度。平板竖屏把键盘收窄到约 448vp 并按键大小放大字号。横屏改为左侧结果、右侧按键，按键高度按屏幕高度计算，避免五行方键超出屏幕。
 - 运算：`entry/src/main/ets/calculator/Calculator.ets`。支持加、减、乘、除、小数、清除、退格；乘除优先于加减。除以零或结果非法时界面显示「无法计算」。
 - 备份扩展 `EntryBackupAbility` 只打日志，没有业务数据。
 - 本地单元测试覆盖计算器运算。仪器测试仍是 Hypium 模板。
@@ -14,11 +14,11 @@
 
 ## 约定
 
-- 保持 Stage 模型、ArkTS 和 ArkUI。设备类型保持 `phone`，除非任务明确要求扩展。
+- 保持 Stage 模型、ArkTS 和 ArkUI。入口模块设备类型是 `phone` 和 `tablet`。
 - 页面必须登记到 `entry/src/main/resources/base/profile/main_pages.json`。
 - 新增依赖写在对应的 `oh-package.json5`，并更新 `oh-package-lock.json5`。
 - 应用名在 `AppScope/resources/base/element/string.json` 的 `app_name`。包名在 `AppScope/app.json5`。
-- 跟随现有资源引用方式，例如 `$r('app.float.page_text_font_size')`、`$string:`。
+- 跟随现有资源引用方式，例如 `$r('app.float.key_font_size')`、`$string:`。
 - 用户可见文案用中文。代码标识符用英文。
 - 运算放在页面或独立模块。`EntryAbility` 只负责创建窗口并加载页面。
 

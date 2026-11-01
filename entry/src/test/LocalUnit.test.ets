@@ -115,5 +115,28 @@ export default function localUnitTest() {
       expect(calc.getDisplay()).assertEqual('2')
       expect(calc.getExpression()).assertEqual('1 + 1 =')
     })
+
+    it('backsOutOfNegativeResultWithoutLoneSign', 0, () => {
+      const calc = new Calculator()
+      press(calc, '4-9=')
+      expect(calc.getDisplay()).assertEqual('-5')
+
+      press(calc, '<')
+      expect(calc.getDisplay()).assertEqual('0')
+
+      press(calc, '<')
+      expect(calc.getDisplay()).assertEqual('0')
+
+      press(calc, '5')
+      expect(calc.getDisplay()).assertEqual('5')
+      expect(calc.getExpression()).assertEqual('')
+    })
+
+    it('dropsTrailingDotBeforeOperator', 0, () => {
+      const calc = new Calculator()
+      press(calc, '3.+2=')
+      expect(calc.getExpression()).assertEqual('3 + 2 =')
+      expect(calc.getDisplay()).assertEqual('5')
+    })
   })
 }

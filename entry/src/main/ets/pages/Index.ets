@@ -1,5 +1,13 @@
-import { uiMaterial } from '@kit.ArkUI'
+import { display, uiMaterial, window } from '@kit.ArkUI'
+import { BusinessError } from '@kit.BasicServicesKit'
 import { CALC_ERROR, Calculator } from '../calculator/Calculator'
+
+const HANDSET_MAX_WIDTH: number = 600
+const MAX_CELL_SIZE: number = 112
+const MIN_CELL_SIZE: number = 32
+const LANDSCAPE_VERTICAL_INSET: number = 24
+const DISPLAY_MIN_FONT_SIZE: number = 24
+const EXPRESSION_MIN_FONT_SIZE: number = 12
 
 @Entry
 @Component
@@ -7,6 +15,9 @@ struct Index {
   @State displayText: string = '0'
   @State expressionText: string = ''
   @State hasError: boolean = false
+  @State paneWidth: number = 0
+  @State paneHeight: number = 0
+  private areaMeasured: boolean = false
   private calculator: Calculator = new Calculator()
   private numberMaterial: uiMaterial.ImmersiveMaterial =
     this.createKeyMaterial($r('app.color.key_number_material'))
@@ -17,7 +28,20 @@ struct Index {
   private equalMaterial: uiMaterial.ImmersiveMaterial =
     this.createKeyMaterial($r('app.color.key_equal_material'))
 
+  aboutToAppear(): void {
+    this.readWindowSize()
+  }
+
   build() {
+    if (this.isLandscape()) {
+      this.landscapePage()
+    } else {
+      this.portraitPage()
+    }
+  }
+
+  @Builder
+  portraitPage() {
     Tabs() {
       TabContent() {
         Column() {
@@ -27,13 +51,14 @@ struct Index {
         }
         .width('100%')
         .height('100%')
+        .alignItems(this.isHandsetPortrait() ? HorizontalAlign.End : HorizontalAlign.Center)
         .padding({
           left: $r('app.float.page_padding'),
           right: $r('app.float.page_padding'),
           top: $r('app.float.page_padding')
         })
       }
-      .tabBar(this.keypad())
+      .tabBar(this.portraitKeypad())
     }
     .barPosition(BarPosition.End)
     .barMode(BarMode.Fixed)
@@ -43,47 +68,112 @@ struct Index {
     .width('100%')
     .height('100%')
     .backgroundColor($r('app.color.page_background'))
+    .onAreaChange((_oldArea: Area, newArea: Area) => {
+      this.updatePane(newArea)
+    })
+  }
+
+  @Builder
+  landscapePage() {
+    Row() {
+      Column() {
+        Blank()
+          .layoutWeight(1)
+        this.resultPanel()
+      }
+      .layoutWeight(1)
+      .height('100%')
+      .justifyContent(FlexAlign.End)
+      .padding({ right: $r('app.float.page_padding') })
+
+      this.keypad()
+    }
+    .width('100%')
+    .height('100%')
+    .alignItems(VerticalAlign.Bottom)
+    .justifyContent(FlexAlign.End)
+    .backgroundColor($r('app.color.page_background'))
+    .padding($r('app.float.page_padding'))
+    .onAreaChange((_oldArea: Area, newArea: Area) => {
+      this.updatePane(newArea)
+    })
+  }
+
+  @Builder
+  portraitKeypad() {
+    Column() {
+      this.keypad()
+    }
+    .width('100%')
+    .alignItems(HorizontalAlign.Center)
   }
 
   @Builder
   resultPanel() {
     Column() {
-      Text(this.expressionText)
-        .width('100%')
-        .height($r('app.float.expression_line_height'))
-        .fontSize($r('app.float.expression_font_size'))
-        .fontColor($r('app.color.expression_text'))
-        .textAlign(TextAlign.End)
-        .maxLines(1)
-        .textOverflow({ overflow: TextOverflow.Ellipsis })
-      if (this.hasError) {
-        Text($r('app.string.calc_error'))
-          .width('100%')
-          .height($r('app.float.display_line_height'))
-          .fontSize($r('app.float.display_font_size'))
-          .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.calc_error'))
-          .textAlign(TextAlign.End)
-          .maxLines(1)
+      if (this.isHandsetPortrait()) {
+        this.expressionLine($r('app.float.expression_font_size'), $r('app.float.expression_line_height'))
+        if (this.hasError) {
+          this.errorLine($r('app.float.display_font_size'), $r('app.float.display_line_height'))
+        } else {
+          this.displayLine($r('app.float.display_font_size'), $r('app.float.display_line_height'))
+        }
       } else {
-        Text(this.displayText)
-          .width('100%')
-          .height($r('app.float.display_line_height'))
-          .fontSize($r('app.float.display_font_size'))
-          .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.display_text'))
-          .textAlign(TextAlign.End)
-          .maxLines(1)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
+        this.expressionLine(this.expressionFontSize(), this.expressionLineHeight())
+        if (this.hasError) {
+          this.errorLine(this.displayFontSize(), this.displayLineHeight())
+        } else {
+          this.displayLine(this.displayFontSize(), this.displayLineHeight())
+        }
       }
     }
-    .width('100%')
+    .width(this.isHandsetPortrait() || this.isLandscape() ? '100%' : this.cellSize() * 4)
     .alignItems(HorizontalAlign.End)
     .padding({
       left: $r('app.float.key_gap'),
       right: $r('app.float.key_gap'),
       bottom: $r('app.float.display_bottom_gap')
     })
+  }
+
+  @Builder
+  expressionLine(fontSize: number | Resource, lineHeight: number | Resource) {
+    Text(this.expressionText)
+      .width('100%')
+      .height(lineHeight)
+      .maxFontSize(fontSize)
+      .minFontSize(EXPRESSION_MIN_FONT_SIZE)
+      .fontColor($r('app.color.expression_text'))
+      .textAlign(TextAlign.End)
+      .maxLines(1)
+      .textOverflow({ overflow: TextOverflow.Ellipsis })
+  }
+
+  @Builder
+  displayLine(fontSize: number | Resource, lineHeight: number | Resource) {
+    Text(this.displayText)
+      .width('100%')
+      .height(lineHeight)
+      .maxFontSize(fontSize)
+      .minFontSize(DISPLAY_MIN_FONT_SIZE)
+      .fontWeight(FontWeight.Bold)
+      .fontColor($r('app.color.display_text'))
+      .textAlign(TextAlign.End)
+      .maxLines(1)
+      .textOverflow({ overflow: TextOverflow.Ellipsis })
+  }
+
+  @Builder
+  errorLine(fontSize: number | Resource, lineHeight: number | Resource) {
+    Text($r('app.string.calc_error'))
+      .width('100%')
+      .height(lineHeight)
+      .fontSize(fontSize)
+      .fontWeight(FontWeight.Bold)
+      .fontColor($r('app.color.calc_error'))
+      .textAlign(TextAlign.End)
+      .maxLines(1)
+      .textOverflow({ overflow: TextOverflow.Ellipsis })
   }
 
   @Builder
@@ -127,11 +217,11 @@ struct Index {
       }
       .width('100%')
     }
-    .width('100%')
+    .width(this.isHandsetPortrait() ? '100%' : this.cellSize() * 4)
     .padding({
-      left: $r('app.float.page_padding'),
-      right: $r('app.float.page_padding'),
-      bottom: $r('app.float.page_padding')
+      left: this.isHandsetPortrait() ? $r('app.float.page_padding') : 0,
+      right: this.isHandsetPortrait() ? $r('app.float.page_padding') : 0,
+      bottom: this.isLandscape() ? 0 : $r('app.float.page_padding')
     })
   }
 
@@ -160,11 +250,11 @@ struct Index {
         .width('100%')
         .height('100%')
         .padding(0)
-        .fontSize($r('app.float.key_font_size'))
+        .fontSize(this.isHandsetPortrait() ? $r('app.float.key_font_size') : this.keyFontSize())
         .fontWeight(FontWeight.Medium)
         .fontColor(foreground)
         .backgroundColor(background)
-        .borderRadius(wide ? $r('app.float.key_radius') : '50%')
+        .borderRadius(this.keyRadius(wide))
         .systemMaterial(material)
         .onClick(() => {
           this.onKey(action)
@@ -186,6 +276,123 @@ struct Index {
       lightEffect: light
     }
     return new uiMaterial.ImmersiveMaterial(options)
+  }
+
+  private readWindowSize(): void {
+    try {
+      window.getLastWindow(getContext(this)).then((win: window.Window) => {
+        const rect = win.getWindowProperties().windowRect
+        const uiContext = this.getUIContext()
+        this.applyInitialSize(uiContext.px2vp(rect.width), uiContext.px2vp(rect.height))
+      }).catch((_error: BusinessError) => {
+        this.readScreenSize()
+      })
+    } catch (_error) {
+      this.readScreenSize()
+    }
+  }
+
+  private readScreenSize(): void {
+    try {
+      const screen = display.getDefaultDisplaySync()
+      const density = screen.densityPixels > 0 ? screen.densityPixels : 1
+      this.applyInitialSize(screen.width / density, screen.height / density)
+    } catch (_error) {
+      this.applyInitialSize(0, 0)
+    }
+  }
+
+  private applyInitialSize(width: number, height: number): void {
+    // 窗口尺寸只是首帧的估值，区域测量一到就以实测为准，避免异步回调把实测结果盖回去
+    if (this.areaMeasured || width <= 0 || height <= 0) {
+      return
+    }
+    this.paneWidth = width
+    this.paneHeight = height
+  }
+
+  private updatePane(area: Area): void {
+    const width = this.lengthToVp(area.width)
+    const height = this.lengthToVp(area.height)
+    if (width <= 0 || height <= 0) {
+      return
+    }
+    this.areaMeasured = true
+    if (width !== this.paneWidth || height !== this.paneHeight) {
+      this.paneWidth = width
+      this.paneHeight = height
+    }
+  }
+
+  private lengthToVp(value: Length): number {
+    if (typeof value === 'number') {
+      return value
+    }
+    if (typeof value === 'string') {
+      const parsed = parseFloat(value)
+      return Number.isFinite(parsed) ? parsed : 0
+    }
+    return 0
+  }
+
+  private isLandscape(): boolean {
+    return this.paneWidth > this.paneHeight && this.paneHeight > 0
+  }
+
+  private isHandsetPortrait(): boolean {
+    return !this.isLandscape() && (this.paneWidth <= 0 || this.paneWidth < HANDSET_MAX_WIDTH)
+  }
+
+  private cellSize(): number {
+    if (this.isLandscape()) {
+      const byHeight = (this.paneHeight - LANDSCAPE_VERTICAL_INSET) / 5
+      const byWidth = (this.paneWidth * 0.46) / 4
+      return Math.max(Math.min(byHeight, byWidth), MIN_CELL_SIZE)
+    }
+    return Math.max(Math.min(this.paneWidth / 4, MAX_CELL_SIZE), MIN_CELL_SIZE)
+  }
+
+  private keyFontSize(): number {
+    return this.clamp(this.cellSize() * 0.32, 20, 40)
+  }
+
+  private expressionFontSize(): number {
+    return this.clamp(this.displayFontSize() * 0.4, 18, 32)
+  }
+
+  private expressionLineHeight(): number {
+    return this.expressionFontSize() * 1.4
+  }
+
+  private displayFontSize(): number {
+    if (this.isLandscape()) {
+      return this.clamp(this.paneHeight * 0.16, 40, 84)
+    }
+    return this.clamp(this.cellSize() * 0.62, 48, 72)
+  }
+
+  private displayLineHeight(): number {
+    return this.displayFontSize() * 1.28
+  }
+
+  private keyRadius(wide: boolean): number | string | Resource {
+    if (!wide) {
+      return '50%'
+    }
+    if (this.isHandsetPortrait()) {
+      return $r('app.float.key_radius')
+    }
+    return this.clamp(this.cellSize() * 0.2, 16, 36)
+  }
+
+  private clamp(value: number, min: number, max: number): number {
+    if (value < min) {
+      return min
+    }
+    if (value > max) {
+      return max
+    }
+    return value
   }
 
   private onKey(action: string): void {

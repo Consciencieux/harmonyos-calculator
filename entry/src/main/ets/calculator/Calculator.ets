@@ -4,6 +4,7 @@ export const CALC_ERROR: number = 1
 const MAX_DIGITS: number = 12
 const MAX_PARTS: number = 40
 const ROUND_SCALE: number = 10000000000
+const ROUND_LIMIT: number = 1000000000000000
 
 class Term {
   value: number = 0
@@ -14,8 +15,8 @@ function formatNumber(value: number): string {
   if (!Number.isFinite(value)) {
     return '0'
   }
-  const rounded = Math.round(value * ROUND_SCALE) / ROUND_SCALE
-  if (rounded === 0) {
+  const rounded = Math.abs(value) < ROUND_LIMIT ? Math.round(value * ROUND_SCALE) / ROUND_SCALE : value
+  if (!Number.isFinite(rounded) || rounded === 0) {
     return '0'
   }
   return rounded.toString()
@@ -71,10 +72,6 @@ export class Calculator {
     if (!this.currentReady || this.current === '0') {
       this.current = '0.'
       this.currentReady = true
-      return
-    }
-    if (this.current === '-') {
-      this.current = '-0.'
       return
     }
     if (this.current.indexOf('.') >= 0) {
@@ -184,21 +181,18 @@ export class Calculator {
       return
     }
     this.current = this.current.substring(0, this.current.length - 1)
-    if (this.current.length === 0) {
+    // 负数结果退格到只剩负号时回到 0，避免显示一个孤立负号
+    if (this.current === '-') {
       this.current = '0'
       this.currentReady = false
     }
   }
 
   private commitText(): string {
-    let text = this.current
-    if (text.endsWith('.')) {
-      text = text.substring(0, text.length - 1)
+    if (this.current.endsWith('.')) {
+      return this.current.substring(0, this.current.length - 1)
     }
-    if (text.length === 0 || text === '-' || text === '-0') {
-      return '0'
-    }
-    return text
+    return this.current
   }
 
   private canAppendDigit(): boolean {
